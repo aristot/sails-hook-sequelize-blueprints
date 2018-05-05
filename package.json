@@ -1,7 +1,7 @@
 {
-  "name": "sails-hook-sequelize-blueprints",
+  "name": "sails-hook-sequeliz-blueprints",
   "version": "1.0.0",
-  "description": "Sails blueprints with sequelize",
+  "description": "Sails V1 blueprints with sequelize V4",
   "main": "index.js",
   "sails": {
     "isHook": true
@@ -15,7 +15,7 @@
     "blueprints"
   ],
   "author": {
-    "name": "Cesar Augusto D. Azevedo"
+    "name": "Raymond Fest"
   },
   "license": "MIT",
   "devDependencies": {
@@ -48,35 +48,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/cesardeazevedo/sails-hook-sequelize-blueprints.git"
+    "url": "https://github.com/aristot/sails-hook-sequeliz-blueprints.git"
   },
   "bugs": {
-    "url": "https://github.com/cesardeazevedo/sails-hook-sequelize-blueprints/issues"
+    "url": "https://github.com/aristot/sails-hook-sequeliz-blueprints.git/issues"
   },
-  "homepage": "https://github.com/cesardeazevedo/sails-hook-sequelize-blueprints",
-  "gitHead": "2bf298094df06075c328e6c0971c0a77f94d5cd0",
-  "_id": "sails-hook-sequelize-blueprints@0.3.0",
-  "_shasum": "56696b42b6a7895960d20a760ad23bb794ab45a0",
-  "_from": "sails-hook-sequelize-blueprints@>=0.3.0 <0.4.0",
-  "_npmVersion": "3.7.5",
-  "_nodeVersion": "4.3.2",
-  "_npmUser": {
-    "name": "fxcesinha",
-    "email": "cesardeazevedo@outlook.com"
-  },
-  "dist": {
-    "shasum": "56696b42b6a7895960d20a760ad23bb794ab45a0",
-    "tarball": "https://registry.npmjs.org/sails-hook-sequelize-blueprints/-/sails-hook-sequelize-blueprints-0.3.0.tgz"
-  },
+  
+  
   "maintainers": [
     {
-      "name": "fxcesinha",
-      "email": "cesardeazevedo@outlook.com"
+      "name": "aristot",
+      "email": "raymond.fest@gmail.com"
     }
   ],
-  "_npmOperationalInternal": {
-    "host": "packages-12-west.internal.npmjs.com",
-    "tmp": "tmp/sails-hook-sequelize-blueprints-0.3.0.tgz_1459479559852_0.8410203261300921"
-  },
-  "_resolved": "https://registry.npmjs.org/sails-hook-sequelize-blueprints/-/sails-hook-sequelize-blueprints-0.3.0.tgz"
+  
 }
