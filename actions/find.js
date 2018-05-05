@@ -31,7 +31,7 @@ var actionUtil = require('../actionUtil'),
 module.exports = function findRecords (req, res) {
   // Look up the model
  var parseBlueprintOptions = req.options.parseBlueprintOptions || req._sails.config.blueprints.parseBlueprintOptions;
-
+  sails.log.debug('BluePrint find.js =/=\=/=\= req.options', req.options)
   // Set the blueprint action for parseBlueprintOptions.
   req.options.blueprintAction = 'find';
 

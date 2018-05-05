@@ -1,7 +1,7 @@
 {
   "name": "sails-hook-sequelize-blueprints",
   "version": "1.0.0",
-  "description": "Sails blueprints with sequelize for Sails V1 and Sequelize V4",
+  "description": "Sails blueprints with sequelize",
   "main": "index.js",
   "sails": {
     "isHook": true
@@ -14,42 +14,69 @@
     "sequelize",
     "blueprints"
   ],
-  "author": "Raymond FEST",
+  "author": {
+    "name": "Cesar Augusto D. Azevedo"
+  },
   "license": "MIT",
   "devDependencies": {
-    "mocha": "^5.0.4",
+    "mocha": "^2.2.5",
     "pg": "^4.4.0",
     "pg-hstore": "^2.3.2",
     "root-require": "^0.3.1",
-    "sails-disk": "^0.10.10",
+    "sails-disk": "^0.10.8",
     "should": "^7.0.2",
     "supertest": "^1.0.1",
     "sails": "^1.0.1",
-    "sequelize": "^4.37.0"
+    "sequelize": "^4.20.0"
   },
   "dependencies": {
-    "async": "^2.6.0",
+    "async": "^1.4.0",
     "continuation-local-storage": "^3.1.4",
-    "lodash": "^4.17.5",
+    "lodash": "^3.10.0",
     "merge-defaults": "^0.2.1",
-    "pluralize": "^7.0.0",
+    "pluralize": "^1.1.2",
     "sails-stringfile": "^0.3.2",
     "sails-util": "^0.10.6"
   },
   "peerDependencies": {
     "sails": "^1.x",
     "sequelize": "^4.x",
-    "sails-hook-sequelize": "^1.1.1"
+    "sails-hook-sequelize": "^1.x"
   },
   "directories": {
     "test": "test"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:cesardeazevedo/sails-hook-sequelize-blueprints.git"
+    "url": "git+ssh://git@github.com/cesardeazevedo/sails-hook-sequelize-blueprints.git"
   },
   "bugs": {
     "url": "https://github.com/cesardeazevedo/sails-hook-sequelize-blueprints/issues"
   },
-  "homepage": "https://github.com/cesardeazevedo/sails-hook-sequelize-blueprints"
+  "homepage": "https://github.com/cesardeazevedo/sails-hook-sequelize-blueprints",
+  "gitHead": "2bf298094df06075c328e6c0971c0a77f94d5cd0",
+  "_id": "sails-hook-sequelize-blueprints@0.3.0",
+  "_shasum": "56696b42b6a7895960d20a760ad23bb794ab45a0",
+  "_from": "sails-hook-sequelize-blueprints@>=0.3.0 <0.4.0",
+  "_npmVersion": "3.7.5",
+  "_nodeVersion": "4.3.2",
+  "_npmUser": {
+    "name": "fxcesinha",
+    "email": "cesardeazevedo@outlook.com"
+  },
+  "dist": {
+    "shasum": "56696b42b6a7895960d20a760ad23bb794ab45a0",
+    "tarball": "https://registry.npmjs.org/sails-hook-sequelize-blueprints/-/sails-hook-sequelize-blueprints-0.3.0.tgz"
+  },
+  "maintainers": [
+    {
+      "name": "fxcesinha",
+      "email": "cesardeazevedo@outlook.com"
+    }
+  ],
+  "_npmOperationalInternal": {
+    "host": "packages-12-west.internal.npmjs.com",
+    "tmp": "tmp/sails-hook-sequelize-blueprints-0.3.0.tgz_1459479559852_0.8410203261300921"
+  },
+  "_resolved": "https://registry.npmjs.org/sails-hook-sequelize-blueprints/-/sails-hook-sequelize-blueprints-0.3.0.tgz"
 }

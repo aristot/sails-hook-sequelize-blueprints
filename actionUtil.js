@@ -91,7 +91,7 @@ var actionUtil = {
    * @param  {Request} req
    * @return {Object}
    */
-  populateEach: function (query, req) {
+  populateEach: function (req) {
     var DEFAULT_POPULATE_LIMIT = req._sails.config.blueprints.defaultLimit || 30;
     var aliasFilter = req.param('populate');
     var associations = [];
@@ -227,7 +227,7 @@ var actionUtil = {
     req.options.criteria = req.options.criteria || {};
     req.options.criteria.blacklist = req.options.criteria.blacklist || ['limit', 'skip', 'page', 'perPage', 'sort', 'populate'];
     // Validate blacklist to provide a more helpful error msg.
-    var blacklist = req.options.criteria && req.options.criteria.blacklist;
+    var blacklist = req.options.criteria.blacklist;
     if (blacklist && !Array.isArray(blacklist)) {
       throw new Error('Invalid `req.options.criteria.blacklist`. Should be an array of strings (parameter names.)');
     }
