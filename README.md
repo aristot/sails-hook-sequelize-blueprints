@@ -1,8 +1,7 @@
-# sails-hook-sequelize-blueprints
+# sails-hook-sequeliz-blueprints
 Sails blueprints for sequelize ORM
 
-[![Build Status](https://travis-ci.org/cesardeazevedo/sails-hook-sequelize-blueprints.svg)](https://travis-ci.org/cesardeazevedo/sails-hook-sequelize-blueprints)
-[![npm version](https://badge.fury.io/js/sails-hook-sequelize-blueprints.svg)](http://badge.fury.io/js/sails-hook-sequelize-blueprints)
+
 
 The blueprints waterline replaced with sequelize.
 
