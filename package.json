@@ -30,13 +30,13 @@
     "sequelize": "^4.20.0"
   },
   "dependencies": {
-    "async": "^1.4.0",
-    "continuation-local-storage": "^3.1.4",
+    "async": "^2.6.0",
+    "continuation-local-storage": "^3.2.1",
     "lodash": "^3.10.0",
     "merge-defaults": "^0.2.1",
-    "pluralize": "^1.1.2",
+    "pluralize": "^7.0.0",
     "sails-stringfile": "^0.3.2",
-    "sails-util": "^0.10.6"
+    "sails-util": "^0.11.0"
   },
   "peerDependencies": {
     "sails": "^1.x",
