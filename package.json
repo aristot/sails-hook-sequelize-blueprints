@@ -41,7 +41,7 @@
   "peerDependencies": {
     "sails": "^1.x",
     "sequelize": "^4.x",
-    "sails-hook-sequelize": "^1.x"
+    "sails-hook-sequeliz": "^1.x"
   },
   "directories": {
     "test": "test"
