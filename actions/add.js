@@ -64,7 +64,7 @@ module.exports = function addToCollection (req, res) {
   }
   var childPkAttr = ChildModel.primaryKeys.id.fieldName;
   // The child record to associate is defined by either...
-  var child;
+  var child = null;
 
   // ...a primary key:
   var supposedChildPk = actionUtil.parsePk(req);
@@ -89,11 +89,11 @@ module.exports = function addToCollection (req, res) {
 
     // Look up the parent record
     parent: function (cb) {
-      Model.findById(parentPk, { include: [{ all : true }]}).then(function(parentRecord) {
+      Model.findById(parentPk, { include: [{ all : true }]}).then((parentRecord) => {
         if (!parentRecord) return cb({status: 404});
         if (!parentRecord[relation]) { return cb({status: 404}); }
         cb(null, parentRecord);
-      }).catch(function(err){
+      }).catch((err) => {
         return cb(err);
       });
     },
@@ -102,7 +102,7 @@ module.exports = function addToCollection (req, res) {
     // from the request, look it up to make sure it exists.  Send back its primary key value.
     // This is here because, although you can do this with `.save()`, you can't actually
     // get ahold of the created child record data, unless you create it first.
-    actualChildPkValue: ['parent', function(cb) {
+    actualChildPkValue: ['parent', (cb) => {
       // Below, we use the primary key attribute to pull out the primary key value
       // (which might not have existed until now, if the .add() resulted in a `create()`)
       // If the primary key was specified for the child record, we should try to find
@@ -115,31 +115,31 @@ module.exports = function addToCollection (req, res) {
           var create = {};
           create[associationAttr] = parentPk;
           create[childAttr] = supposedChildPk;
-          ThroughModel.create(create).then(function(throughModelInstance) {
+          ThroughModel.create(create).then(() => {
               return cb();
             })
-            .catch(function(err) {
+            .catch( (err) => {
               return cb(err);
             });
         } else {
           // Otherwise, it must be referring to a new thing, so create it.
           // and update the through model
-          createChild(function(err, childInstanceId) {
+          createChild((err, childInstanceId) => {
             if (err) cb(err);
             var create = {};
             create[associationAttr] = parentPk;
             create[childAttr] = childInstanceId;
-            ThroughModel.create(create).then(function(throughModelInstance) {
+            ThroughModel.create(create).then( () => {
                 return cb();
               })
-              .catch(function(err) {
+              .catch( (err) => {
                 return cb(err);
               });
           });
         }
       } else {
         if (child[childPkAttr]) {
-          ChildModel.findById(child[childPkAttr]).then(function(childRecord) {
+          ChildModel.findById(child[childPkAttr]).then( (childRecord) => {
             // if there is no real update, no update
             // if (childRecord[associationAttr] === parentPk) return cb(null, childRecord[childPkAttr]);
             // Didn't find it?  Then try creating it.
@@ -147,10 +147,10 @@ module.exports = function addToCollection (req, res) {
             // Otherwise use the one we found.
             // UPDATE THE CHILD WITH PARENTPK
             childRecord[associationAttr] = parentPk;
-            childRecord.save().then(function() {
+            childRecord.save().then( () => {
               return cb(null, childRecord[childPkAttr]);
             });
-          }).catch(function(err){
+          }).catch( (err) => {
             return cb(err);
           });
         }
@@ -163,7 +163,7 @@ module.exports = function addToCollection (req, res) {
       // Create a new instance and send out any required pubsub messages.
       function createChild(customCb) {
 
-        ChildModel.create(child).then(function(newChildRecord){
+        ChildModel.create(child).then( (newChildRecord) => {
           if (req._sails.hooks.pubsub) {
             if (req.isSocket) {
               ChildModel.subscribe(req, newChildRecord);
@@ -176,18 +176,18 @@ module.exports = function addToCollection (req, res) {
           // in the through model => customCb
           return (typeof customCb === 'function') ?
             customCb(null, newChildRecord[childPkAttr]) : cb(null, newChildRecord[childPkAttr]);
-        }).catch(function(err){
+        }).catch( (err) => {
           return cb(err);
         });
       }
     }]
-  }, function(err, results){
+  }, function(){
     // if (err) return res.negotiate(err);
 
-    Model.findById(parentPk, { include: req._sails.config.blueprints.populate ? [{ all: true }] : []}).then(function(matchingRecord) {
+    Model.findById(parentPk, { include: req._sails.config.blueprints.populate ? [{ all: true }] : []}).then( (matchingRecord) => {
       if(!matchingRecord) return res.serverError();
       return res.ok(matchingRecord);
-    }).catch(function(err) {
+    }).catch( (err) => {
       return res.serverError(err);
     });
   });

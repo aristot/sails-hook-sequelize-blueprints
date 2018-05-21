@@ -31,7 +31,7 @@ var actionUtil = require('../actionUtil'),
 module.exports = function findRecords (req, res) {
   // Look up the model
  var parseBlueprintOptions = req.options.parseBlueprintOptions || req._sails.config.blueprints.parseBlueprintOptions;
-  sails.log.debug('BluePrint find.js =/=\=/=\= req.options', req.options)
+  sails.log.debug('BluePrint find.js =/=\=/=\= req.options', req.options);
   // Set the blueprint action for parseBlueprintOptions.
   req.options.blueprintAction = 'find';
 
@@ -63,20 +63,20 @@ module.exports = function findRecords (req, res) {
     order: actionUtil.parseSort(req),
     include: req._sails.config.blueprints.populate ?
              (_.isEmpty(populate) ? [{ all : true}] : populate) : []
-  }).then(function(matchingRecords) {
+  }).then( (matchingRecords) => {
     // Only `.watch()` for new instances of the model if
     // `autoWatch` is enabled.
     if (req._sails.hooks.pubsub && req.isSocket) {
       Model.subscribe(req, matchingRecords);
       if (req.options.autoWatch) { Model.watch(req); }
       // Also subscribe to instances of all associated models
-      _.each(matchingRecords, function (record) {
+      _.each(matchingRecords,  (record) => {
         actionUtil.subscribeDeep(req, record);
       });
     }
 
     return res.ok(matchingRecords);
-  }).catch(function(err){
+  }).catch( (err) => {
     return res.serverError(err);
   });
 };

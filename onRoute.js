@@ -32,7 +32,7 @@ module.exports = function(sails) {
       throw new Error('Consistency violation: route target is an array, but is being handled by blueprint hook instead of Sails router!');
     }
 
-    if (!target || typeof target != 'object') {
+    if (!target || typeof target !== 'object') {
       throw new Error('Consistency violation: route target is a ' + typeof(target) + ', but is being handled by blueprint hook instead of Sails router!');
     }
 
@@ -41,7 +41,7 @@ module.exports = function(sails) {
     if (target.blueprint) {
 
       var errMsg = 'The `blueprint` route target syntax is no longer supported.';
-      if (typeof target.blueprint == 'string' && typeof target.model == 'string') {
+      if (typeof target.blueprint === 'string' && typeof target.model === 'string') {
         errMsg = ' Use {action: \'' + target.model.toLowerCase() + '.' + target.blueprint + '\'} instead!';
       }
       sails.log.error(errMsg);

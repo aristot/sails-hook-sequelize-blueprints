@@ -33,16 +33,17 @@ module.exports = function parseBlueprintOptions(req) {
   function cleanWhere(clause){
     var where = {};
     for (var k in clause){
-      if(extras.indexof(k) != -1) continue;
-      if(clause[k] == null || clause[k] == undefined )continue;
-      where[k] = clause[k]
+      if( clause.hasOwnProperty( k ) ) {
+        if(extras.indexof(k) !== -1) continue;
+        if(!clause[k])continue;
+        where[k] = clause[k];
+      }
     }
-    return where
+    return where;
   };
 
   // Set some defaults.
   var DEFAULT_LIMIT = 30;
-  var DEFAULT_POPULATE_LIMIT = 30;
 
   // Get the name of the blueprint action being run.
   var blueprint = req.options.blueprintAction;
@@ -100,9 +101,9 @@ module.exports = function parseBlueprintOptions(req) {
       })();
 
       if (req.param('select')) {
-        queryOptions.criteria.select = req.param('select').split(',').map(function(attribute) {return attribute.trim()});
+        queryOptions.criteria.select = req.param('select').split(',').map((attribute) => {return attribute.trim();});
       } else if (req.param('omit')) {
-        queryOptions.criteria.omit = req.param('omit').split(',').map(function(attribute) {return attribute.trim()});
+        queryOptions.criteria.omit = req.param('omit').split(',').map((attribute) => {return attribute.trim();});
       }
 
       if (req.param('limit')) {
@@ -147,7 +148,7 @@ module.exports = function parseBlueprintOptions(req) {
           // Trim whitespace off of the attributes.
           for (let i = 0, attr, l = attrs.length; i<l;i++){
             attr = attrs[i].trim();
-            attributes[attr] = {}
+            attributes[attr] = {};
           }
           return attributes;
         })();
@@ -213,34 +214,6 @@ module.exports = function parseBlueprintOptions(req) {
       queryOptions.associatedIds = [req.param('childid')];
 
       break;
-    case 'replace':
-
-      if (!req.options.alias) {
-        throw new Error('Missing required route option, `req.options.alias`.');
-      }
-      queryOptions.alias = req.options.alias;
-
-      queryOptions.criteria = { where: {} };
-
-      queryOptions.targetRecordId = req.param('parentid');
-
-      queryOptions.associatedIds = Array.isArray(req.body) ? req.body : req.query[req.options.alias];
-
-      if (typeof queryOptions.associatedIds === 'string') {
-        try {
-          queryOptions.associatedIds = JSON.parse(queryOptions.associatedIds);
-        } catch (e) {
-          throw flaverr({ name: 'UsageError', raw: e }, new Error(
-            'The associated ids provided in this request (for the `' + req.options.alias + '` collection) are not valid.  '+
-            'If specified as a string, the associated ids provided to the "replace" blueprint action must be parseable as '+
-            'a JSON array, e.g. `[1, 2]`.'
-            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-            // FUTURE: Use smart example depending on the expected pk type (e.g. if string, show mongo ids instead)
-            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-          ));
-        }//</catch>
-      }
-      break;
 
     case 'populate':
 
@@ -289,9 +262,9 @@ module.exports = function parseBlueprintOptions(req) {
       }
 
       if (req.param('select')) {
-        qPopulate.select = req.param('select').split(',').map(function(attribute) {return attribute.trim()});
+        qPopulate.select = req.param('select').split(',').map((attribute) => {return attribute.trim();});
       } else if (req.param('omit')) {
-        qPopulate.omit = req.param('omit').split(',').map(function(attribute) {return attribute.trim()});
+        qPopulate.omit = req.param('omit').split(',').map((attribute) => {return attribute.trim();});
       }
 
       if (req.param('limit')) {
@@ -299,7 +272,7 @@ module.exports = function parseBlueprintOptions(req) {
       } else if (association.collection) {
         qPopulate.limit = DEFAULT_LIMIT;
       }
-      if (eq.param('skip')) { qPopulate.skip = req.param('skip'); }
+      if (req.param('skip')) { qPopulate.skip = req.param('skip'); }
       if (!req.param('sort')) {
         qPopulate.sort = (function getSortCriteria() {
           var sort = req.param('sort');

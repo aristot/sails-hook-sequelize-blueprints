@@ -1,7 +1,3 @@
-/**
- * Module dependencies
- */
-var actionUtil = require('../actionUtil');
 
 /**
  * Create Record
@@ -30,7 +26,7 @@ module.exports = function createRecord (req, res) {
     // Get the new record data.
     var data = queryOptions.newRecord; 
     // Create new instance of model using data from params
-    Model.create(data).then(function(newInstance) {
+    Model.create(data).then( (newInstance) => {
         // If we have the pubsub hook, use the model class's publish method
         // to notify all subscribers about the created item
         if (req._sails.hooks.pubsub) {
@@ -43,7 +39,7 @@ module.exports = function createRecord (req, res) {
 
         // Send JSONP-friendly response if it's supported
         res.ok(newInstance);
-    }).catch(function(err){
+    }).catch( (err) =>{
         // Differentiate between waterline-originated validation errors
         // and serious underlying issues. Respond with badRequest if a
         // validation error is encountered, w/ validation info.

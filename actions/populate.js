@@ -40,7 +40,7 @@ module.exports = function expand(req, res) {
 
   // Coerce the child PK to an integer if necessary
   if (childPk) {
-    if (Model.attributes[Model.primaryKeys.id.fieldName].type == 'integer') {
+    if (Model.attributes[Model.primaryKeys.id.fieldName].type.toLowerCase() === 'integer') {
       childPk = +childPk || 0;
     }
   }
@@ -59,7 +59,7 @@ module.exports = function expand(req, res) {
     populate.limit = actionUtil.parseLimit(req);
 
   Model.findById(parentPk, { include: [populate] })
-  .then(function(matchingRecord) {
+  .then( (matchingRecord) => {
       if (!matchingRecord) {
         if(Model.associations[relation].associationType === 'BelongsToMany') {
           if (_.has(where, 'id')) return res.notFound('No record found with the specified id.');
@@ -78,7 +78,7 @@ module.exports = function expand(req, res) {
         actionUtil.subscribeDeep(req, matchingRecord);
       }
       return res.ok(matchingRecord[relation]);
-    }).catch(function(err){
+    }).catch( (err) => {
       return res.serverError(err);
     });
 };

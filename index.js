@@ -60,9 +60,9 @@ module.exports = function(sails) {
         // e.g. '/frog': 'FrogController.index'
         index: false,
         // e.g. '/frog/find/:id?': 'FrogController.find'
-        shortcuts: false,
+        shortcuts: true,
         // e.g. 'get /frog/:id?': 'FrogController.find'
-        rest: false,
+        rest: true,
         // Blueprint/Shadow-Route Modifiers
         //
         // e.g. 'get /api/v2/frog/:id?': 'FrogController.find'
@@ -129,7 +129,7 @@ module.exports = function(sails) {
       hook = this;
       hook.config = Object.assign({}, this.defaults.blueprints, sails.config.blueprints);
       // Set the _middlewareType of each blueprint action to 'BLUEPRINT: <action>'.      
-      _.each(BlueprintController, function(fn, key) {
+      _.each(BlueprintController, (fn, key) => {
         fn._middlewareType = 'BLUEPRINT: ' + key;
       });
       // Register route syntax for binding blueprints directly.
@@ -143,7 +143,7 @@ module.exports = function(sails) {
       // If the ORM hook is active, wait for it to load, then create actions
       // for each model.
       if (sails.hooks.sequelize) {
-        sails.after('hook:sequelize:loaded', function() {
+        sails.after('hook:sequelize:loaded', () => {
           hook.registerActions(cb);
         });
       }
@@ -161,10 +161,9 @@ module.exports = function(sails) {
       sails.log.debug('BLUE PRINT +++++++bindShadowRoutes++++++++config : ', config);
       // Validate blueprint config for this controller
       if ( config.prefix ) {
-        if ( typeof config.prefix != 'string' ) {
-          sails.after('lifted', function () {
+        if ( typeof config.prefix !== 'string' ) {
+          sails.after('lifted', () => {
             sails.log.blank();
-            sails.log.warn(util.format('Ignoring invalid blueprint prefix configured for controller `%s`.', globalId));
             sails.log.warn('`prefix` should be a string, e.g. "/api/v1".');
             STRINGFILE.logMoreInfoLink(STRINGFILE.get('links.docs.config.blueprints'), sails.log.warn);
           });
@@ -172,9 +171,9 @@ module.exports = function(sails) {
         }
         if ( !config.prefix.match(/^\//) ) {
           var originalPrefix = config.prefix;
-          sails.after('lifted', function () {
+          sails.after('lifted', () => {
             sails.log.blank();
-            sails.log.warn(util.format('Invalid blueprint prefix ("%s") configured for controller `%s` (should start with a `/`).', originalPrefix, globalId));
+            sails.log.warn(util.format('Invalid blueprint prefix ("%s") configured for controller (should start with a `/`).', originalPrefix));
             sails.log.warn(util.format('For now, assuming you meant:  "%s".', config.prefix));
             STRINGFILE.logMoreInfoLink(STRINGFILE.get('links.docs.config.blueprints'), sails.log.warn);
           });
@@ -185,10 +184,10 @@ module.exports = function(sails) {
 
       // Validate REST route blueprint config for this controller
       if ( config.restPrefix ) {
-        if ( typeof config.restPrefix != 'string' ) {
-          sails.after('lifted', function () {
+        if ( typeof config.restPrefix !== 'string' ) {
+          sails.after('lifted',() => {
             sails.log.blank();
-            sails.log.warn(util.format('Ignoring invalid blueprint rest prefix configured for controller `%s`.', globalId));
+            sails.log.warn(util.format('Ignoring invalid blueprint rest prefix configured for controller '));
             sails.log.warn('`restPrefix` should be a string, e.g. "/api/v1".');
             STRINGFILE.logMoreInfoLink(STRINGFILE.get('links.docs.config.blueprints'), sails.log.warn);
           });
@@ -196,9 +195,9 @@ module.exports = function(sails) {
         }
         if ( !config.restPrefix.match(/^\//) ) {
           var originalRestPrefix = config.restPrefix;
-          sails.after('lifted', function () {
+          sails.after('lifted', () => {
             sails.log.blank();
-            sails.log.warn(util.format('Invalid blueprint restPrefix ("%s") configured for controller `%s` (should start with a `/`).', originalRestPrefix, globalId));
+            sails.log.warn(util.format('Invalid blueprint restPrefix ("%s") configured for controller  (should start with a `/`).', originalRestPrefix));
             sails.log.warn(util.format('For now, assuming you meant:  "%s".', config.restPrefix));
             STRINGFILE.logMoreInfoLink(STRINGFILE.get('links.docs.config.blueprints'), sails.log.warn);
           });
@@ -209,7 +208,7 @@ module.exports = function(sails) {
       // Get a copy of the Sails actions dictionary.
       var actions = sails.getActions();
       // Determine whether any model is using the default archive model.
-      var defaultArchiveInUse = _.any(sails.models, function(model) { return model.archiveModelIdentity === 'archive'; });
+      var defaultArchiveInUse = _.any(sails.models, (model) => { return model.archiveModelIdentity === 'archive'; });
       // If action routing is turned on, bind a route pointing
       // at each action in the Sails actions dictionary
 
@@ -217,13 +216,13 @@ module.exports = function(sails) {
         sails.log.debug('BLUE PRINT +++++++bindShadowRoutes++++++++  ACTIONS ++++++++++');
 
         // Loop through each action in the dictionary
-        _.each(actions, function(action, key) {
+        _.each(actions, (action, key) =>  {
           // If this is a blueprint action, only skip it.
           // It'll be handled in the "shortcut routes" section,
           // if those routes are enabled.
           if (action._middlewareType && action._middlewareType.indexOf('BLUEPRINT') === 0)return;
           // If this action belongs to a controller with blueprint action routes turned off, skip it.
-          if (_.any(config._controllers, function(config, controllerIdentity) {return config.actions === false && key.indexOf(controllerIdentity) === 0}))return;
+          if (_.any(config._controllers, function(config, controllerIdentity) {return config.actions === false && key.indexOf(controllerIdentity) === 0};))return;
           // Add the route prefix (if any) and bind the route to that URL.
           var url = config.prefix + '/' + key;
           sails.router.bind(url, key);
@@ -237,11 +236,11 @@ module.exports = function(sails) {
       if ( !config.shortcuts ) {
         sails.log.debug('BLUE PRINT +++++++bindShadowRoutes++++++++  SHORTCUTS ++++++++++');
         // Loop through each model.
-        _.each(sails.models, function(Model, identity) {
+        _.each(sails.models, (Model, identity) => {
 
           if (identity === 'archive' && defaultArchiveInUse)return;
           // If this there is a matching controller with blueprint shortcut routes turned off, skip it.
-          if (_.any(config._controllers, function(config, controllerIdentity) {return config.shortcuts === false && identity === controllerIdentity})) return;
+          if (_.any(config._controllers, (config, controllerIdentity) => {return config.shortcuts === false && identity === controllerIdentity})) return;
           // Determine the base route for the model.
           var baseShortcutRoute = (function() {
             // Start with the model identity.
@@ -260,7 +259,7 @@ module.exports = function(sails) {
 
           // Bind "rest" blueprint/shadow routes based on known associations in our model's schema
           // Bind add/remove for each `collection` associations
-          _.mapKeys(Model.associations, function(value){
+          _.mapKeys(Model.associations, (value) => {
               var foreign = typeof value === 'object' && value.options ? value.options.foreignKey : undefined,
                   alias;
               if (!foreign)alias =  value.as;
@@ -294,11 +293,11 @@ module.exports = function(sails) {
         // Loop throug each model.
         sails.log.debug('BLUE PRINT +++++++bindShadowRoutes++++++++  RESTFULL ++++++++++');
         
-        _.each(sails.models, function(Model, identity) {
+        _.each(sails.models, (Model, identity) => {
 
           if (identity === 'archive' && defaultArchiveInUse)return;
           // If this there is a matching controller with blueprint shortcut routes turned off, skip it.
-          if (_.any(config._controllers, function(config, controllerIdentity) {return config.rest === false && identity === controllerIdentity}))return;
+          if (_.any(config._controllers, (config, controllerIdentity) => {return config.rest === false && identity === controllerIdentity;}))return;
           // Determine the base REST route for the model.
           var baseRestRoute = (function() {
               // Start with the model identity.
@@ -369,11 +368,11 @@ module.exports = function(sails) {
       }
       if ( config.actions ) {
         // Loop through each action in the dictionary
-        _.each(actions, function(action, key) {
+        _.each(actions, (action, key) => {
           // Does the key end in `/index` (or is it === `index`)?
           if (key === 'index' || key.match(/\/index$/)) {
             // If this action belongs to a controller with blueprint action routes turned off, skip it.
-            if (_.any(config._controllers, function(config, controllerIdentity){return config.actions === false && key.indexOf(controllerIdentity) === 0})) return;
+            if (_.any(config._controllers, (config, controllerIdentity) => {return config.actions === false && key.indexOf(controllerIdentity) === 0};)) return;
             // Strip the `.index` off the end.
             var index = key.replace(/\/?index$/,'');
             // Replace any remaining dots with slashes.
@@ -387,14 +386,14 @@ module.exports = function(sails) {
 
     registerActions: function(cb) {
       // Determine whether or not any model is using the default archive.
-      var defaultArchiveInUse = _.any(sails.models, function(model) { return model.archiveModelIdentity === 'archive'; });
+      var defaultArchiveInUse = _.any(sails.models, (model) => { return model.archiveModelIdentity === 'archive'; });
 
       // Loop through all of the loaded models and add actions for each.
       // Even though we're adding the same exact actions for each model,
       // (e.g. user/find and pet/find are the same), it's important that
       // each model gets its own set so that they can have different
       // action middleware (e.g. policies) applied to them.
-      _.each(_.keys(sails.models), function(modelIdentity) {
+      _.each(_.keys(sails.models), (modelIdentity) => {
 
         if (modelIdentity === 'archive' && defaultArchiveInUse)return;
 
