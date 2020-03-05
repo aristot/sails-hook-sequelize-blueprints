@@ -1,8 +1,9 @@
 /**
  * Module dependencies
  */
-var util = require('util'),
-  actionUtil = require('../actionUtil');
+var util = require('util');
+var _ = require('lodash');
+var actionUtil = require('../actionUtil');
 
 
 /**
@@ -26,7 +27,19 @@ module.exports = function expand(req, res) {
   var Model = actionUtil.parseModel(req);
   var relation = req.options.alias;
   if (!relation || !Model) return res.serverError();
-
+  function objCompact(obj, strict) {
+    obj = _.reduce(obj, function(memo, value, paramName) {
+      if (strict) {
+        if (value !== undefined && value !== null && value !== false && value !== '') {
+          memo[paramName] = value;
+        }
+      } else if (value !== undefined) {
+          memo[paramName] = value;
+        }
+        return memo;
+    }, {});
+    return obj;
+  }
   // Allow customizable blacklist for params.
   req.options.criteria = req.options.criteria || {};
   req.options.criteria.blacklist = req.options.criteria.blacklist || ['limit', 'skip', 'sort', 'id', 'parentid'];
@@ -47,7 +60,7 @@ module.exports = function expand(req, res) {
 
   var where = childPk ? {id: [childPk]} : actionUtil.parseCriteria(req);
 
-  var populate = sails.util.objCompact({
+  var populate = objCompact({
     as: relation,
     model: sails.models[req.options.target.toLowerCase()],
     order: actionUtil.parseSort(req),

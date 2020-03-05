@@ -114,9 +114,10 @@ module.exports = {
   }
 };
 ```
+
 # New version customized for new Sail V1 version and Sequelize V4 version
 This is an experimental hook tested with sqlite3 database developed by Raymond FEST from ARISTOT compagny
-
+# 2020 03 05 fix bug with util objCompact
 # Credits
 A big thanks to [festo/sailsjs-sequelize-example](https://github.com/festo/sailsjs-sequelize-example) and [Manuel Darveau's answer](https://groups.google.com/forum/#!msg/sailsjs/ALMxbKfnCIo/H2RcRUnnFGE) that turn this possible with thier sequelize implementations.
 
