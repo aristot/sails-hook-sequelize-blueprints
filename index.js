@@ -1,9 +1,8 @@
 /**
  * Module dependencies
  */
-var _ = require('@sailshq/lodash')
+const _ = require('@sailshq/lodash')
   , util = require('util')
-  , async = require('async')
   , pluralize = require('pluralize')
   , flaverr = require('flaverr')
   , BlueprintController = {
@@ -33,7 +32,7 @@ module.exports = function(sails) {
    * (need access to `sails`)
    */
 
-  var onRoute = require('./onRoute')(sails);
+  const onRoute = require('./onRoute')(sails);
 
   var hook;
 
@@ -156,7 +155,7 @@ module.exports = function(sails) {
 
     bindShadowRoutes: function() {
 
-      var config = sails.config.blueprints || {};
+      let config = sails.config.blueprints || {};
       sails.log.debug('BLUE PRINT +++++++bindShadowRoutes++++++++this.config : ', this.config);      
       sails.log.debug('BLUE PRINT +++++++bindShadowRoutes++++++++config : ', config);
       // Validate blueprint config for this controller
@@ -170,7 +169,7 @@ module.exports = function(sails) {
           return;
         }
         if ( !config.prefix.match(/^\//) ) {
-          var originalPrefix = config.prefix;
+          const originalPrefix = config.prefix;
           sails.after('lifted', () => {
             sails.log.blank();
             sails.log.warn(util.format('Invalid blueprint prefix ("%s") configured for controller (should start with a `/`).', originalPrefix));
@@ -194,7 +193,7 @@ module.exports = function(sails) {
           return;
         }
         if ( !config.restPrefix.match(/^\//) ) {
-          var originalRestPrefix = config.restPrefix;
+          const originalRestPrefix = config.restPrefix;
           sails.after('lifted', () => {
             sails.log.blank();
             sails.log.warn(util.format('Invalid blueprint restPrefix ("%s") configured for controller  (should start with a `/`).', originalRestPrefix));
@@ -206,9 +205,9 @@ module.exports = function(sails) {
         }
       }
       // Get a copy of the Sails actions dictionary.
-      var actions = sails.getActions();
+      const actions = sails.getActions();
       // Determine whether any model is using the default archive model.
-      var defaultArchiveInUse = _.any(sails.models, (model) => { return model.archiveModelIdentity === 'archive'; });
+      const defaultArchiveInUse = _.any(sails.models, (model) => { return model.archiveModelIdentity === 'archive'; });
       // If action routing is turned on, bind a route pointing
       // at each action in the Sails actions dictionary
 
@@ -222,9 +221,9 @@ module.exports = function(sails) {
           // if those routes are enabled.
           if (action._middlewareType && action._middlewareType.indexOf('BLUEPRINT') === 0)return;
           // If this action belongs to a controller with blueprint action routes turned off, skip it.
-          if (_.any(config._controllers, function(config, controllerIdentity) {return config.actions === false && key.indexOf(controllerIdentity) === 0};))return;
+          if (_.any(config._controllers, function(config, controllerIdentity) {return config.actions === false && key.indexOf(controllerIdentity) === 0;}))return;
           // Add the route prefix (if any) and bind the route to that URL.
-          var url = config.prefix + '/' + key;
+          const url = config.prefix + '/' + key;
           sails.router.bind(url, key);
         });
       }
@@ -240,11 +239,11 @@ module.exports = function(sails) {
 
           if (identity === 'archive' && defaultArchiveInUse)return;
           // If this there is a matching controller with blueprint shortcut routes turned off, skip it.
-          if (_.any(config._controllers, (config, controllerIdentity) => {return config.shortcuts === false && identity === controllerIdentity})) return;
+          if (_.any(config._controllers, (config, controllerIdentity) => {return config.shortcuts === false && identity === controllerIdentity;})) return;
           // Determine the base route for the model.
-          var baseShortcutRoute = (function() {
+          const baseShortcutRoute = (function() {
             // Start with the model identity.
-            var baseRouteName = identity;
+            let baseRouteName = identity;
             // Pluralize it if plurization option is on.
             if (config.pluralize)baseRouteName = pluralize(baseRouteName);
             // Add the route prefix and base route name together.
@@ -260,8 +259,8 @@ module.exports = function(sails) {
           // Bind "rest" blueprint/shadow routes based on known associations in our model's schema
           // Bind add/remove for each `collection` associations
           _.mapKeys(Model.associations, (value) => {
-              var foreign = typeof value === 'object' && value.options ? value.options.foreignKey : undefined,
-                  alias;
+              const foreign = typeof value === 'object' && value.options ? value.options.foreignKey : undefined;
+              let   alias;
               if (!foreign)alias =  value.as;
                else alias = foreign.as || foreign.name || foreign;
                sails.log.debug('Binding "shortcuts" to association blueprint -=-=-> `'+alias+'` for',value);
@@ -272,20 +271,20 @@ module.exports = function(sails) {
       
           function _bindShortcutRoute(template, blueprintActionName) {
             // Get the route URL for this shortcut
-            var shortcutRoute = util.format(template, baseShortcutRoute);
+            const shortcutRoute = util.format(template, baseShortcutRoute);
             // Bind it to the appropriate action, adding in some route options including a deep clone of the model associations.
             // The clone prevents the blueprint action from accidentally altering the model definition in any way.
             sails.router.bind(shortcutRoute, identity + '/' + blueprintActionName, null, { model: identity, associations: _.cloneDeep(Model.associations), autoWatch: sails.config.blueprints.autoWatch });
           }
           function _bindAssocRoute(template, blueprintActionName, alias) {
             // Get the route URL for this shortcut
-            var assocRoute = util.format(template, baseShortcutRoute, alias);
+            const assocRoute = util.format(template, baseShortcutRoute, alias);
             // Bind it to the appropriate action, adding in some route options including a deep clone of the model associations.
             // The clone prevents the blueprint action from accidentally altering the model definition in any way.
             sails.router.bind(assocRoute, identity + '/' + blueprintActionName, null, { model: identity, alias: alias, associations: _.cloneDeep(Model.associations), autoWatch: sails.config.blueprints.autoWatch  });
           }
         });
-      };
+      }
 
       // If RESTful blueprint routing is turned on, bind CRUD routes
       // for each model.
@@ -299,9 +298,9 @@ module.exports = function(sails) {
           // If this there is a matching controller with blueprint shortcut routes turned off, skip it.
           if (_.any(config._controllers, (config, controllerIdentity) => {return config.rest === false && identity === controllerIdentity;}))return;
           // Determine the base REST route for the model.
-          var baseRestRoute = (function() {
+          const baseRestRoute = (function() {
               // Start with the model identity.
-              var baseRouteName = identity;
+              let baseRouteName = identity;
               // Pluralize it if plurization option is on.
               if (config.pluralize)baseRouteName = pluralize(baseRouteName);
               // Add the route prefix, RESTful route prefix and base route name together.
@@ -329,8 +328,8 @@ module.exports = function(sails) {
             // Bind "rest" blueprint/shadow routes based on known associations in our model's schema
             // Bind add/remove for each `collection` associations
           _.mapKeys(Model.associations, function(value){
-              var foreign = typeof value === 'object' && value.options ? value.options.foreignKey : undefined,
-                  alias;
+              const foreign = typeof value === 'object' && value.options ? value.options.foreignKey : undefined;
+              let    alias;
               if (!foreign)alias =  value.as;
                 else  alias = foreign.as || foreign.name || foreign;
               sails.log.debug('Binding "rest" to association blueprint -=-=-> `'+alias+'` for',value);
@@ -341,8 +340,8 @@ module.exports = function(sails) {
 
           // and populate for both `collection` and `model` associations
           _.mapKeys(Model.associations, function(value){
-              var foreign = typeof value === 'object' && value.options ? value.options.foreignKey : undefined,
-                  alias;
+              const foreign = typeof value === 'object' && value.options ? value.options.foreignKey : undefined;
+              let    alias;
               if (!foreign)alias =  value.as;
               else alias = foreign.as || foreign.name || foreign;
               _bindAssocRoute('get %s/:parentid/%s', 'populate', alias );
@@ -350,19 +349,19 @@ module.exports = function(sails) {
           });
           function _bindRestRoute(template, blueprintActionName) {
             // Get the URL for the RESTful route
-            var restRoute = util.format(template, baseRestRoute);
+            const restRoute = util.format(template, baseRestRoute);
             // Bind it to the appropriate action, adding in some route options including a deep clone of the model associations.
             // The clone prevents the blueprint action from accidentally altering the model definition in any way.
             sails.router.bind(restRoute, identity + '/' + blueprintActionName, null, { model: identity, associations: _.cloneDeep(Model.associations), autoWatch: sails.config.blueprints.autoWatch  });
-          };
+          }
 
           function _bindAssocRoute(template, blueprintActionName, alias) {
             // Get the URL for the RESTful route
-            var assocRoute = util.format(template, baseRestRoute, alias);
+            const assocRoute = util.format(template, baseRestRoute, alias);
             // Bind it to the appropriate action, adding in some route options including a deep clone of the model associations.
             // The clone prevents the blueprint action from accidentally altering the model definition in any way.
             sails.router.bind(assocRoute, identity + '/' + blueprintActionName, null, { model: identity, alias: alias, associations: _.cloneDeep(Model.associations), autoWatch: sails.config.blueprints.autoWatch  });
-          };
+          }
 
         });
       }
@@ -372,11 +371,11 @@ module.exports = function(sails) {
           // Does the key end in `/index` (or is it === `index`)?
           if (key === 'index' || key.match(/\/index$/)) {
             // If this action belongs to a controller with blueprint action routes turned off, skip it.
-            if (_.any(config._controllers, (config, controllerIdentity) => {return config.actions === false && key.indexOf(controllerIdentity) === 0};)) return;
+            if (_.any(config._controllers, (config, controllerIdentity) => {return config.actions === false && key.indexOf(controllerIdentity) === 0;})) return;
             // Strip the `.index` off the end.
-            var index = key.replace(/\/?index$/,'');
+            const index = key.replace(/\/?index$/,'');
             // Replace any remaining dots with slashes.
-            var url = '/' + index;
+            const url = '/' + index;
             // Bind the url to the action.
             sails.router.bind(url, key);
           }
@@ -386,7 +385,7 @@ module.exports = function(sails) {
 
     registerActions: function(cb) {
       // Determine whether or not any model is using the default archive.
-      var defaultArchiveInUse = _.any(sails.models, (model) => { return model.archiveModelIdentity === 'archive'; });
+      const defaultArchiveInUse = _.any(sails.models, (model) => { return model.archiveModelIdentity === 'archive'; });
 
       // Loop through all of the loaded models and add actions for each.
       // Even though we're adding the same exact actions for each model,

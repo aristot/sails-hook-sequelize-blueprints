@@ -23,7 +23,7 @@
 process.chdir(__dirname);
 // Ensure a "sails" can be located:
 (function() {
-  var sails;
+  let sails;
   try {
     sails = require('sails');
   } catch (e) {
@@ -37,7 +37,7 @@ process.chdir(__dirname);
   }
   sails.log('Testing');
   // Try to get `rc` dependency
-  var rc;
+  let rc;
   try {
     rc = require('rc');
   } catch (e0) {

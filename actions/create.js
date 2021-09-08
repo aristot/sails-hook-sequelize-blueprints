@@ -14,17 +14,17 @@
  */
 module.exports = function createRecord (req, res) {
 
-    var parseBlueprintOptions = req.options.parseBlueprintOptions || req._sails.config.blueprints.parseBlueprintOptions;
+    const parseBlueprintOptions = req.options.parseBlueprintOptions || req._sails.config.blueprints.parseBlueprintOptions;
         // Set the blueprint action for parseBlueprintOptions.
     req.options.blueprintAction = 'create';
-    var queryOptions = parseBlueprintOptions(req);
+    const queryOptions = parseBlueprintOptions(req);
     //var Model = actionUtil.parseModel(req);
-    var Model = req._sails.models[queryOptions.using];
+    const Model = req._sails.models[queryOptions.using];
     // Create data object (monolithic combination of all parameters)
     // Omit the blacklisted params (like JSONP callback param, etc.)
     //var data = actionUtil.parseValues(req);
     // Get the new record data.
-    var data = queryOptions.newRecord; 
+    const data = queryOptions.newRecord; 
     // Create new instance of model using data from params
     Model.create(data).then( (newInstance) => {
         // If we have the pubsub hook, use the model class's publish method

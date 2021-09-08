@@ -115,7 +115,7 @@ module.exports = {
 };
 ```
 
-# New version customized for new Sail V1 version and Sequelize V4 version
+# New version 2021 customized for new Sail V1.4 version and Sequelize V5 version
 This is an experimental hook tested with sqlite3 database developed by Raymond FEST from ARISTOT compagny
 # 2020 03 05 fix bug with util objCompact
 # Credits

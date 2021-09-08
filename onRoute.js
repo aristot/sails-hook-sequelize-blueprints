@@ -22,7 +22,7 @@ module.exports = function(sails) {
    * @api private
    */
   return function interpretRouteSyntax(route) {
-    var target = route.target;
+    const target = route.target;
 
     if (typeof target === 'function') {
       throw new Error('Consistency violation: route target is a function, but is being handled by blueprint hook instead of Sails router!');
@@ -40,7 +40,7 @@ module.exports = function(sails) {
     // (`{ blueprint: 'create' }` et. al.)
     if (target.blueprint) {
 
-      var errMsg = 'The `blueprint` route target syntax is no longer supported.';
+      let errMsg = 'The `blueprint` route target syntax is no longer supported.';
       if (typeof target.blueprint === 'string' && typeof target.model === 'string') {
         errMsg = ' Use {action: \'' + target.model.toLowerCase() + '.' + target.blueprint + '\'} instead!';
       }

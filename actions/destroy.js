@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-var actionUtil = require('../actionUtil');
+const actionUtil = require('../actionUtil');
 
 /**
  * Destroy One Record
@@ -20,8 +20,8 @@ var actionUtil = require('../actionUtil');
  */
 module.exports = function destroyOneRecord (req, res) {
 
-  var Model = actionUtil.parseModel(req);
-  var pk = actionUtil.requirePk(req);
+  const Model = actionUtil.parseModel(req);
+  const pk = actionUtil.requirePk(req);
 
   Model.findById(pk, { include: req._sails.config.blueprints.populate ? [{ all: true }] : []})
   .then( (record) => {

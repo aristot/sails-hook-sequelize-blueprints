@@ -2,9 +2,9 @@
  * Module dependencies
  */
 
-var actionUtil = require('../actionUtil');
-var util = require('util');
-var _ = require('lodash');
+const actionUtil = require('../actionUtil'),
+      util = require('util'),
+      _ = require('lodash');
 
 
 /**
@@ -20,18 +20,18 @@ var _ = require('lodash');
 module.exports = function updateOneRecord (req, res) {
 
   // Look up the model
-  var Model = actionUtil.parseModel(req);
+  const Model = actionUtil.parseModel(req);
 
   // Locate and validate the required `id` parameter.
-  var pk = actionUtil.requirePk(req);
+  const pk = actionUtil.requirePk(req);
 
   // Create `values` object (monolithic combination of all parameters)
   // But omit the blacklisted params (like JSONP callback param, etc.)
-  var values = actionUtil.parseValues(req);
+  const values = actionUtil.parseValues(req);
 
   // Omit the path parameter `id` from values, unless it was explicitly defined
   // elsewhere (body/query):
-  var idParamExplicitlyIncluded = ((req.body && req.body.id) || req.query.id);
+  const idParamExplicitlyIncluded = ((req.body && req.body.id) || req.query.id);
   if (!idParamExplicitlyIncluded) delete values.id;
 
   // No matter what, don't allow changing the PK via the update blueprint
@@ -58,7 +58,7 @@ module.exports = function updateOneRecord (req, res) {
         req._sails.log.warn(util.format('Unexpected output from `%s.update`.', Model.globalId));
       }
 
-      var updatedRecord = pk;
+      const updatedRecord = pk;
 
       // If we have the pubsub hook, use the Model's publish method
       // to notify all subscribers about the update.

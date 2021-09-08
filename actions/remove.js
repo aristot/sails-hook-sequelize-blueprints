@@ -1,8 +1,8 @@
 /**
  * Module dependencies
  */
-var actionUtil = require('../actionUtil');
-var _ = require('lodash');
+const actionUtil = require('../actionUtil'),
+      _ = require('lodash');
 
 
 /**
@@ -18,35 +18,36 @@ var _ = require('lodash');
 module.exports = function remove(req, res) {
 
   // Ensure a model and alias can be deduced from the request.
-  var Model = actionUtil.parseModel(req);
-  var relation = req.options.alias;
+  const Model = actionUtil.parseModel(req);
+  const relation = req.options.alias;
   if (!relation) {
     return res.serverError(new Error('Missing required route option, `req.options.alias`.'));
   }
 
   // The primary key of the parent record
-  var parentPk = req.param('parentid');
+  const parentPk = req.param('parentid');
 
   // Get the model class of the child in order to figure out the name of
   // the primary key attribute.
-  var ChildModel = sails.models[req.options.target.toLowerCase()];
-  var childPkAttr = ChildModel.primaryKeys.id.fieldName;
+  const ChildModel = sails.models[req.options.target.toLowerCase()];
+  const childPkAttr = ChildModel.primaryKeys.id.fieldName;
 
   // The primary key of the child record to remove
   // from the aliased collection
-  var childPk = actionUtil.parsePk(req);
-  var childRemove = {};
+  const childPk = actionUtil.parsePk(req);
+  let childRemove = {};
   childRemove[childPkAttr] = childPk;
 
-  var isManyToManyThrough = false;
+  let isManyToManyThrough = false;
+  let ThroughModel, childAttr; 
   // check it is a M-M through
   if (_.has(Model.associations[relation].options, 'through')) {
     isManyToManyThrough = true;
-    var through = Model.associations[relation].options.through.model;
-    var ThroughModel = sails.models[through.toLowerCase()];
-    var childRelation = Model.associations[relation].options.to;
-    var childForeign = ChildModel.associations[childRelation].options.foreignKey;
-    var childAttr = childForeign.name || childForeign;
+    const through = Model.associations[relation].options.through.model;
+    ThroughModel = sails.models[through.toLowerCase()];
+    const childRelation = Model.associations[relation].options.to;
+    const childForeign = ChildModel.associations[childRelation].options.foreignKey;
+    childAttr = childForeign.name || childForeign;
   }
 
   if(_.isUndefined(childPk)) {
@@ -58,7 +59,7 @@ module.exports = function remove(req, res) {
     if (!parentRecord[relation]) return res.notFound();
 
     if (isManyToManyThrough) {
-      var throughRemove = { };
+      let throughRemove = { };
       throughRemove[childAttr] = childPk;
       ThroughModel.destroy({ where: throughRemove }).then( () => {
         return returnParentModel();

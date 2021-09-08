@@ -1,8 +1,8 @@
 /**
  * Module dependencies
  */
-var actionUtil = require('../actionUtil'),
-  _ = require('lodash');
+const actionUtil = require('../actionUtil'),
+      _ = require('lodash');
 
 /**
  * Find One Record
@@ -20,9 +20,9 @@ var actionUtil = require('../actionUtil'),
  */
 
 module.exports = function findOneRecord (req, res) {
-  var Model = actionUtil.parseModel(req);
-  var pk = actionUtil.requirePk(req);
-  var populate = actionUtil.populateEach(req);
+  const Model = actionUtil.parseModel(req);
+  const pk = actionUtil.requirePk(req);
+  const populate = actionUtil.populateEach(req);
   sails.log.debug('BluePrint findOne.js =/=\=/=\= req.options', req.options);
 
   Model.findOne({where:{id:pk}, include: req._sails.config.blueprints.populate ?

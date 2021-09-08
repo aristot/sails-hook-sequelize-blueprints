@@ -2,7 +2,7 @@
  * Module dependencies
  */
 
-var _ = require('@sailshq/lodash'),
+const _ = require('@sailshq/lodash'),
     mergeDefaults = require('merge-defaults'),
     flaverr = require('flaverr'),
     util = require('util');
@@ -11,7 +11,7 @@ var _ = require('@sailshq/lodash'),
  *
  * @type {Object}
  */
-var actionUtil = {
+const actionUtil = {
   /**
    * Given a Waterline query and an express request, populate
    * the appropriate/specified association attributes and
@@ -23,11 +23,11 @@ var actionUtil = {
    * @return {Query}
    */
   populateRequest: function(query, req) {
-    var DEFAULT_POPULATE_LIMIT = req._sails.config.blueprints.defaultLimit || 30;
-    var _options = req.options;
-    var aliasFilter = req.param('populate');
-    var shouldPopulate = !_options.populate ? (req._sails.config.blueprints.populate) : _options.populate;
-    var parentModel = req.options.model;
+    const DEFAULT_POPULATE_LIMIT = req._sails.config.blueprints.defaultLimit || 30;
+    const _options = req.options;
+    let aliasFilter = req.param('populate');
+    let shouldPopulate = !_options.populate ? (req._sails.config.blueprints.populate) : _options.populate;
+    const parentModel = req.options.model;
     // Convert the string representation of the filter list to an Array. We
     // need this to provide flexibility in the request param. This way both
     // list string representations are supported:
@@ -38,7 +38,7 @@ var actionUtil = {
       aliasFilter = (aliasFilter) ? aliasFilter.split(',') : [];
     }
 
-    var associations = [];
+    let associations = [];
 
     _.each(sails.models[parentModel].associations, (association) => {
       // If an alias filter was provided, override the blueprint config.
@@ -54,7 +54,7 @@ var actionUtil = {
       // name of the association attribute, and value is true/false
       // (true to populate, false to not)
       if (shouldPopulate) {
-        var populationLimit =
+        const populationLimit =
           _options['populate_' + association.alias + '_limit'] ||
           _options.populate_limit ||
           _options.limit ||
@@ -77,10 +77,10 @@ var actionUtil = {
    * @return {Object}
    */
   populateEach: function (req) {
-    var DEFAULT_POPULATE_LIMIT = req._sails.config.blueprints.defaultLimit || 30;
-    var aliasFilter = req.param('populate');
-    var associations = [];
-    var parentModel = req.options.model;
+    const DEFAULT_POPULATE_LIMIT = req._sails.config.blueprints.defaultLimit || 30;
+    let aliasFilter = req.param('populate');
+    let associations = [];
+    const parentModel = req.options.model;
 
     // Convert the string representation of the filter list to an Array. We
     // need this to provide flexibility in the request param. This way both
@@ -93,12 +93,12 @@ var actionUtil = {
     }
 
     _.each(aliasFilter, (association) => {
-      var childModel = sails.models[association.toLowerCase()];
+      const childModel = sails.models[association.toLowerCase()];
       // iterate through parent model associations
       _.each(sails.models[parentModel].associations, (relation) => {
         // check if association match childModel name
         if(relation.target.name === childModel.name) {
-          var obj = { model: childModel, as: relation.options.as };
+          const obj = { model: childModel, as: relation.options.as };
           if(relation.associationType === 'HasMany') {
             obj.limit = req._sails.config.blueprints.populateLimit || DEFAULT_POPULATE_LIMIT;
           }
@@ -121,10 +121,10 @@ var actionUtil = {
    * @return {Query}
    */  
   populateQuery: function(query, associations, sails) {
-    var DEFAULT_POPULATE_LIMIT = (sails && sails.config.blueprints.defaultLimit) || 30;
+    const DEFAULT_POPULATE_LIMIT = (sails && sails.config.blueprints.defaultLimit) || 30;
 
     return _.reduce(associations, (query, association) => {
-      var options = {};
+      let options = {};
       if (association.type === 'collection') {
         options.limit = association.limit || DEFAULT_POPULATE_LIMIT;
       }
@@ -142,8 +142,8 @@ var actionUtil = {
     _.each(req.options.associations, (assoc) => {
 
       // Look up identity of associated model
-      var ident = assoc[assoc.type];
-      var AssociatedModel = req._sails.models[ident];
+      const ident = assoc[assoc.type];
+      const AssociatedModel = req._sails.models[ident];
 
       if (req.options.autoWatch) AssociatedModel._watch(req);
 
@@ -167,7 +167,7 @@ var actionUtil = {
    * @return {Integer|String}
    */
   parsePk: function ( req ) {
-    var pk = req.options.id || (req.options.where && req.options.where.id) || req.param('id');
+    let pk = req.options.id || (req.options.where && req.options.where.id) || req.param('id');
     // TODO: make this smarter...
     // (e.g. look for actual primary key of model and look for it
     //  in the absence of `id`.)
@@ -185,7 +185,7 @@ var actionUtil = {
    * @return {Integer|String}
    */
   requirePk: function (req) {
-    var pk = module.exports.parsePk(req);
+    let pk = module.exports.parsePk(req);
     // Validate the required `id` parameter
     if ( !pk ) {
       var err = new Error(
@@ -212,12 +212,12 @@ var actionUtil = {
     req.options.criteria = req.options.criteria || {};
     req.options.criteria.blacklist = req.options.criteria.blacklist || ['limit', 'skip', 'page', 'perPage', 'sort', 'populate'];
     // Validate blacklist to provide a more helpful error msg.
-    var blacklist = req.options.criteria.blacklist;
+    let blacklist = req.options.criteria.blacklist;
     if (blacklist && !Array.isArray(blacklist)) {
       throw new Error('Invalid `req.options.criteria.blacklist`. Should be an array of strings (parameter names.)');
     }
     // Look for explicitly specified `where` parameter.
-    var where = req.allParams().where;
+    let where = req.allParams().where;
     // If `where` parameter is a string, try to interpret it as JSON
     if (typeof where === 'string') {
       try {
@@ -255,17 +255,17 @@ var actionUtil = {
     req.options.values.blacklist = req.options.values.blacklist;
 
     // Validate blacklist to provide a more helpful error msg.
-    var blacklist = req.options.values.blacklist;
+    let blacklist = req.options.values.blacklist;
     if (blacklist && !Array.isArray(blacklist)) {
       throw new Error('Invalid `req.options.values.blacklist`. Should be an array of strings (parameter names.)');
     }
     // Make an array out of the request body data if it wasn't one already;
     // this allows us to process multiple entities (e.g. for use with a "create" blueprint) the same way
     // that we process singular entities.
-    var bodyData = Array.isArray(req.body) ? req.body : [req.allParams()];
+    const bodyData = Array.isArray(req.body) ? req.body : [req.allParams()];
     // Process each item in the bodyData array, merging with req.options, omitting blacklisted properties, etc.
-    var valuesArray = _.map(bodyData,(element) => {
-      var values;
+    const valuesArray = _.map(bodyData,(element) => {
+      let values;
       // Merge properties of the element into req.options.value, omitting the blacklist
       values = mergeDefaults(element, _.omit(req.options.values, 'blacklist'));
       // Omit properties that are in the blacklist (like query modifiers)
@@ -289,10 +289,10 @@ var actionUtil = {
   parseModel: function (req) {
 
     // Ensure a model can be deduced from the request options.
-    var model = req.options.model || req.options.controller;
+    const model = req.options.model || req.options.controller;
     if (!model) throw new Error(util.format('No "model" specified in route options.'));
 
-    var Model = req._sails.models[model];
+    const Model = req._sails.models[model];
     if ( !Model ) throw new Error(util.format('Invalid route option, "model".\nI don\'t know about any models named: `%s`',model));
 
     return Model;
@@ -302,7 +302,7 @@ var actionUtil = {
    * @param  {Request} req
    */
   parseSort: function (req) {
-    var sort = req.param('sort') || req.options.sort;
+    let sort = req.param('sort') || req.options.sort;
     if (!sort) {return undefined;}
     if (typeof sort === 'string') {
       try {
@@ -316,8 +316,8 @@ var actionUtil = {
    * @param  {Request} req
    */
   parseLimit: function (req) {
-    var DEFAULT_LIMIT = req._sails.config.blueprints.defaultLimit || 30;
-    var limit = req.param('limit') || (typeof req.options.limit !== 'undefined' ? req.options.limit : DEFAULT_LIMIT);
+    const DEFAULT_LIMIT = req._sails.config.blueprints.defaultLimit || 30;
+    let limit = req.param('limit') || (typeof req.options.limit !== 'undefined' ? req.options.limit : DEFAULT_LIMIT);
     if (limit) { limit = +limit; }
     return limit;
   },
@@ -326,8 +326,8 @@ var actionUtil = {
    * @param  {Request} req
    */
   parseSkip: function (req) {
-    var DEFAULT_SKIP = 0;
-    var skip = req.param('skip') || (typeof req.options.skip !== 'undefined' ? req.options.skip : DEFAULT_SKIP);
+    const DEFAULT_SKIP = 0;
+    let skip = req.param('skip') || (typeof req.options.skip !== 'undefined' ? req.options.skip : DEFAULT_SKIP);
     if (skip) { skip = +skip; }
     return skip;
   },
@@ -336,8 +336,8 @@ var actionUtil = {
    * @param  {Request} req
    */
   parsePerPage: function (req) {
-    var DEFAULT_PER_PAGE = req._sails.config.blueprints.defaultLimit || 25;
-    var perPage = req.param('perPage') || (typeof req.options.perPage !== 'undefined' ? req.options.perPage : DEFAULT_PER_PAGE);
+    const DEFAULT_PER_PAGE = req._sails.config.blueprints.defaultLimit || 25;
+    let perPage = req.param('perPage') || (typeof req.options.perPage !== 'undefined' ? req.options.perPage : DEFAULT_PER_PAGE);
     if (perPage) { perPage = +perPage; }
     return perPage;
   },
@@ -346,8 +346,8 @@ var actionUtil = {
    * @param  {Request} req
   */
   parsePage: function (req) {
-    var DEFAULT_PAGE = 1;
-    var page = req.param('page') || (typeof req.options.page !== 'undefined' ? req.options.page : DEFAULT_PAGE);
+    const DEFAULT_PAGE = 1;
+    let page = req.param('page') || (typeof req.options.page !== 'undefined' ? req.options.page : DEFAULT_PAGE);
     if (page) { page = +page; }
     return page;
   }

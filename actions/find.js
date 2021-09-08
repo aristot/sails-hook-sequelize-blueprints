@@ -1,8 +1,8 @@
 /**
  * Module dependencies
  */
-var actionUtil = require('../actionUtil'),
-  _ = require('@sailshq/lodash');
+const actionUtil = require('../actionUtil'),
+      _ = require('@sailshq/lodash');
 
 /**
  * Find Records
@@ -30,19 +30,20 @@ var actionUtil = require('../actionUtil'),
 
 module.exports = function findRecords (req, res) {
   // Look up the model
- var parseBlueprintOptions = req.options.parseBlueprintOptions || req._sails.config.blueprints.parseBlueprintOptions;
+ const parseBlueprintOptions = req.options.parseBlueprintOptions || req._sails.config.blueprints.parseBlueprintOptions;
   sails.log.debug('BluePrint find.js =/=\=/=\= req.options', req.options);
   // Set the blueprint action for parseBlueprintOptions.
   req.options.blueprintAction = 'find';
 
-  var queryOptions = parseBlueprintOptions(req);
-  var Model = req._sails.models[queryOptions.using];
+  const queryOptions = parseBlueprintOptions(req);
+  const Model = req._sails.models[queryOptions.using];
 
-  var limit = actionUtil.parseLimit(req),
-    offset = actionUtil.parseSkip(req),
-    page = actionUtil.parsePage(req),
-    perPage = actionUtil.parsePerPage(req),
-    populate = actionUtil.populateEach(req);
+  let limit = actionUtil.parseLimit(req),
+      offset = actionUtil.parseSkip(req);
+
+  const page = actionUtil.parsePage(req),
+        perPage = actionUtil.parsePerPage(req),
+        populate = actionUtil.populateEach(req);
 
   if(page && perPage){
     limit = perPage;

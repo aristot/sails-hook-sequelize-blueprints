@@ -2,9 +2,9 @@
  * Module dependencies
  */
 
-var util = require('util');
-var _ = require('@sailshq/lodash');
-var flaverr = require('flaverr');
+const util = require('util'),
+      _ = require('@sailshq/lodash'),
+      flaverr = require('flaverr');
 /**
  * parseBlueprintOptions()
  *
@@ -29,10 +29,10 @@ var flaverr = require('flaverr');
  */
 
 module.exports = function parseBlueprintOptions(req) {
-  var extras = ['limit', 'skip', 'sort', 'populate', 'select', 'omit'];
+  const extras = ['limit', 'skip', 'sort', 'populate', 'select', 'omit'];
   function cleanWhere(clause){
-    var where = {};
-    for (var k in clause){
+    let where = {};
+    for (const k in clause){
       if( clause.hasOwnProperty( k ) ) {
         if(extras.indexof(k) !== -1) continue;
         if(!clause[k])continue;
@@ -40,26 +40,26 @@ module.exports = function parseBlueprintOptions(req) {
       }
     }
     return where;
-  };
+  }
 
   // Set some defaults.
-  var DEFAULT_LIMIT = 30;
+  const DEFAULT_LIMIT = 30;
 
   // Get the name of the blueprint action being run.
-  var blueprint = req.options.blueprintAction;
+  const blueprint = req.options.blueprintAction;
   sails.log.debug('parse-blue_options blueprint =+=+=+=+=+ >>>>>> :', blueprint);
   // Get the model identity from the action name (e.g. 'user/find').
-  var model = req.options.action.split('/')[0];
+  const model = req.options.action.split('/')[0];
   if (!model) { throw new Error(util.format('No "model" specified in route options.')); }
 
   // Get the model class.
-  var Model = req._sails.models[model];
+  const Model = req._sails.models[model];
   if ( !Model ) { throw new Error(util.format('Invalid route option, "model".\nI don\'t know about any models named: `%s`',model)); }
   // Get the default populates array
-  var defaultPopulates ={};
+  let defaultPopulates ={};
 
   // Initialize the queryOptions dictionary we'll be returning.
-  var queryOptions = { using: model, populates: defaultPopulates };
+  let queryOptions = { using: model, populates: defaultPopulates };
 
   switch (blueprint) {
 
@@ -69,7 +69,7 @@ module.exports = function parseBlueprintOptions(req) {
       queryOptions.criteria = {};
 
       queryOptions.criteria.where = (function getWhereCriteria(){
-        var where = {};
+        let where = {};
         // For `findOne`, set "where" to just look at the primary key.
         if (blueprint === 'findOne') {
           where[Model.primaryKey] = req.param('id');
@@ -116,7 +116,7 @@ module.exports = function parseBlueprintOptions(req) {
 
       if (req.param('sort')) {
         queryOptions.criteria.sort = (function getSortCriteria() {
-          var sort = req.param('sort');
+          let sort = req.param('sort');
           if (!sort)return undefined;
           // If `sort` is a string, attempt to JSON.parse() it.
           // (e.g. `{"name": 1}`)
@@ -139,7 +139,7 @@ module.exports = function parseBlueprintOptions(req) {
 
         queryOptions.populates = (function getPopulates() {
           // Get the request param.
-          var attributes = req.param('populate');
+          let attributes = req.param('populate');
           // If it's `false`, populate nothing.
           if (attributes === 'false')return {};
           // Split the list on commas.
@@ -161,7 +161,7 @@ module.exports = function parseBlueprintOptions(req) {
 
       queryOptions.newRecord = (function getNewRecord(){
         // Use all of the request params as values for the new record.
-        var values = req.allParams();
+        const values = req.allParams();
         return values;
 
       })();
@@ -178,7 +178,7 @@ module.exports = function parseBlueprintOptions(req) {
       queryOptions.valuesToSet = (function getValuesToSet(){
 
         // Use all of the request params as values for the new record, _except_ `id`.
-        var values = _.omit(req.allParams(), 'id');
+        let values = _.omit(req.allParams(), 'id');
         // No matter what, don't allow changing the PK via the update blueprint
         // (you should just drop and re-add the record if that's what you really want)
         if (typeof values[Model.primaryKey] !== 'undefined' && values[Model.primaryKey] !== queryOptions.criteria.where[Model.primaryKey]) {
@@ -221,7 +221,7 @@ module.exports = function parseBlueprintOptions(req) {
         throw new Error('Missing required route option, `req.options.alias`.');
       }
 
-      var association = _.find(Model.associations, {alias: req.options.alias});
+      const association = _.find(Model.associations, {alias: req.options.alias});
       if (!association) {
         throw new Error('Consistency violation: `populate` blueprint could not find association `' + req.options.alias + '` in model `' + Model.globalId + '`.');
       }
@@ -230,12 +230,12 @@ module.exports = function parseBlueprintOptions(req) {
       queryOptions.criteria.where[Model.primaryKey] = req.param('parentid');
       queryOptions.populates = {};
       queryOptions.populates[req.options.alias] = {};
-      var qPopulate = queryOptions.populates[req.options.alias];
+      let qPopulate = queryOptions.populates[req.options.alias];
       // If this is a to-many association, add a `where` clause.
       if (association.collection) {
         qPopulate.where = (function getPopulateCriteria(){
 
-          var where = req.allParams().where;
+          let where = req.allParams().where;
 
           // If `where` parameter is a string, try to interpret it as JSON.
           // (If it cannot be parsed, throw a UsageError.)
@@ -275,7 +275,7 @@ module.exports = function parseBlueprintOptions(req) {
       if (req.param('skip')) { qPopulate.skip = req.param('skip'); }
       if (!req.param('sort')) {
         qPopulate.sort = (function getSortCriteria() {
-          var sort = req.param('sort');
+          let sort = req.param('sort');
           if (!sort)return undefined;
           // If `sort` is a string, attempt to JSON.parse() it.
           // (e.g. `{"name": 1}`)

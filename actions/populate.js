@@ -1,9 +1,9 @@
 /**
  * Module dependencies
  */
-var util = require('util');
-var _ = require('lodash');
-var actionUtil = require('../actionUtil');
+const util = require('util'),
+      _ = require('lodash'),
+      actionUtil = require('../actionUtil');
 
 
 /**
@@ -24,8 +24,8 @@ var actionUtil = require('../actionUtil');
  */
 
 module.exports = function expand(req, res) {
-  var Model = actionUtil.parseModel(req);
-  var relation = req.options.alias;
+  const Model = actionUtil.parseModel(req);
+  const relation = req.options.alias;
   if (!relation || !Model) return res.serverError();
   function objCompact(obj, strict) {
     obj = _.reduce(obj, function(memo, value, paramName) {
@@ -44,12 +44,12 @@ module.exports = function expand(req, res) {
   req.options.criteria = req.options.criteria || {};
   req.options.criteria.blacklist = req.options.criteria.blacklist || ['limit', 'skip', 'sort', 'id', 'parentid'];
 
-  var parentPk = req.param('parentid');
+  const parentPk = req.param('parentid');
 
   // Determine whether to populate using a criteria, or the
   // specified primary key of the child record, or with no
   // filter at all.
-  var childPk = actionUtil.parsePk(req);
+  let childPk = actionUtil.parsePk(req);
 
   // Coerce the child PK to an integer if necessary
   if (childPk) {
@@ -58,9 +58,9 @@ module.exports = function expand(req, res) {
     }
   }
 
-  var where = childPk ? {id: [childPk]} : actionUtil.parseCriteria(req);
+  const where = childPk ? {id: [childPk]} : actionUtil.parseCriteria(req);
 
-  var populate = objCompact({
+  const populate = objCompact({
     as: relation,
     model: sails.models[req.options.target.toLowerCase()],
     order: actionUtil.parseSort(req),

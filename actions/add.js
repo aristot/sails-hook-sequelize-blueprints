@@ -1,9 +1,9 @@
 /**
  * Module dependencies
  */
-var actionUtil = require('../actionUtil');
-var _ = require('@sailshq/lodash');
-var async = require('async');
+const actionUtil = require('../actionUtil');
+const _ = require('@sailshq/lodash');
+const async = require('async');
 
 /**
  * Add Record To Collection
@@ -33,41 +33,42 @@ var async = require('async');
 
 module.exports = function addToCollection (req, res) {
   // Ensure a model and alias can be deduced from the request.
-  var parseBlueprintOptions = req.options.parseBlueprintOptions || req._sails.config.blueprints.parseBlueprintOptions;
+  const parseBlueprintOptions = req.options.parseBlueprintOptions || req._sails.config.blueprints.parseBlueprintOptions;
 
   // Set the blueprint action for parseBlueprintOptions.
   req.options.blueprintAction = 'add';
 
-  var queryOptions = parseBlueprintOptions(req);
-  var Model = req._sails.models[queryOptions.using];
+  const queryOptions = parseBlueprintOptions(req);
+  const Model = req._sails.models[queryOptions.using];
 
-  var relation = queryOptions.alias;
+  const relation = queryOptions.alias;
   if (!relation) {
     return res.serverError(new Error('Missing required route option, `req.options.alias`.'));
   }
    // The primary key of the parent record
-  var parentPk = queryOptions.targetRecordId;
+  const parentPk = queryOptions.targetRecordId;
   // Get the model class of the child in order to figure out the name of
   // the primary key attribute.
-  var foreign = Model.associations[relation].options.foreignKey;
-  var associationAttr = foreign.name || foreign;
-  var ChildModel = req._sails.models[req.options.target.toLowerCase()];
-  var isManyToManyThrough = false;
+  const foreign = Model.associations[relation].options.foreignKey;
+  const associationAttr = foreign.name || foreign;
+  const ChildModel = req._sails.models[req.options.target.toLowerCase()];
+  let isManyToManyThrough = false;
+  let ThroughModel, childAttr;
   // check it is a M-M through
   if (_.has(Model.associations[relation].options, 'through')) {
     isManyToManyThrough = true;
-    var through = Model.associations[relation].options.through.model;
-    var ThroughModel = sails.models[through.toLowerCase()];
-    var childRelation = Model.associations[relation].options.to;
-    var childForeign = ChildModel.associations[childRelation].options.foreignKey;
-    var childAttr = childForeign.name || childForeign;
+    const through = Model.associations[relation].options.through.model;
+    ThroughModel = sails.models[through.toLowerCase()];
+    const childRelation = Model.associations[relation].options.to;
+    const childForeign = ChildModel.associations[childRelation].options.foreignKey;
+    childAttr = childForeign.name || childForeign;
   }
-  var childPkAttr = ChildModel.primaryKeys.id.fieldName;
+  const childPkAttr = ChildModel.primaryKeys.id.fieldName;
   // The child record to associate is defined by either...
-  var child = null;
+  let child = null;
 
   // ...a primary key:
-  var supposedChildPk = actionUtil.parsePk(req);
+  const supposedChildPk = actionUtil.parsePk(req);
   if (supposedChildPk) {
     child = {};
     child[childPkAttr] = supposedChildPk;
@@ -112,13 +113,12 @@ module.exports = function addToCollection (req, res) {
           // update just the through model with boths IDS => parentPK + supposedChildPk
           // needed the name of foreign keys (got parent, gets target)
           // throughModel update ({ associationAttr: parentPk, targetAttr: supposedChildPk })
-          var create = {};
+          let create = {};
           create[associationAttr] = parentPk;
           create[childAttr] = supposedChildPk;
           ThroughModel.create(create).then(() => {
               return cb();
-            })
-            .catch( (err) => {
+            }).catch( (err) => {
               return cb(err);
             });
         } else {
@@ -126,13 +126,12 @@ module.exports = function addToCollection (req, res) {
           // and update the through model
           createChild((err, childInstanceId) => {
             if (err) cb(err);
-            var create = {};
+            let create = {};
             create[associationAttr] = parentPk;
             create[childAttr] = childInstanceId;
             ThroughModel.create(create).then( () => {
                 return cb();
-              })
-              .catch( (err) => {
+              }).catch( (err) => {
                 return cb(err);
               });
           });

@@ -22,7 +22,7 @@ module.exports = sails => {
             }
             if (sails.config[this.configKey].exposeToGlobal) {
                 sails.log.verbose('Exposing Sequelize globally');
-                global['Sequelize'] = Sequelize;
+                global.Sequelize = Sequelize;
             }
             // Override sails internal loadModels function
             // needs to be done in configure()
@@ -73,7 +73,7 @@ module.exports = sails => {
 
             if (sails.config[this.configKey].exposeToGlobal) {
                 sails.log.verbose('Exposing Sequelize and Sequelize connections globally');
-                global['SequelizeConnections'] = connections;
+                global.SequelizeConnections = connections;
             }
 
            return originalLoadModels((err, models) => {
@@ -103,7 +103,7 @@ module.exports = sails => {
             if (!datastores.hasOwnProperty(datastoreName)) {
                 throw new Error('Default connection \'' + datastoreName + '\' not found in config/connections');
             }
-            sails.log.silly('datastores --->', datastores)
+            sails.log.silly('datastores --->', datastores);
             for (connectionName in datastores) {
                 connection = datastores[connectionName];
                 // Skip waterline connections
@@ -179,7 +179,7 @@ module.exports = sails => {
                 }
                 sails.models[modelDef.globalId.toLowerCase()] = modelClass;
             }
-            sails.log.silly('models loaded :', sails.models)
+            sails.log.silly('models loaded :', sails.models);
 
             for (modelName in models) {
                 modelDef = models[modelName];
@@ -236,8 +236,8 @@ module.exports = sails => {
                     default:
                         forceSyncFlag = false;
                         alterFlag = false;
-                };
-                forceSync = migrate === 'drop';
+                }
+                const forceSync = migrate === 'drop';
                 for (connectionName in datastores) {
                     connectionDescription = datastores[connectionName];
                     // Skip waterline connections
