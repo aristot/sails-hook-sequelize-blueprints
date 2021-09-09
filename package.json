@@ -1,10 +1,11 @@
 {
   "name": "sails-hook-sequeliz-blueprints",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Sails V1.4 blueprints with sequelize V5",
   "main": "index.js",
   "sails": {
-    "isHook": true
+    "isHook": true,
+    "hookName": "sequelize-blueprints"
   },
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha test/bootstrap.test.js test/unit/**/*.test.js"
