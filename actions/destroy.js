@@ -23,7 +23,7 @@ module.exports = function destroyOneRecord (req, res) {
   const Model = actionUtil.parseModel(req);
   const pk = actionUtil.requirePk(req);
 
-  Model.findById(pk, { include: req._sails.config.blueprints.populate ? [{ all: true }] : []})
+  Model.findByPk(pk, { include: req._sails.config.blueprints.populate ? [{ all: true }] : []})
   .then( (record) => {
     if(!record) return res.notFound('No record found with the specified `id`.');
 

@@ -90,7 +90,7 @@ module.exports = function addToCollection (req, res) {
 
     // Look up the parent record
     parent: function (cb) {
-      Model.findById(parentPk, { include: [{ all : true }]}).then((parentRecord) => {
+      Model.findByPk(parentPk, { include: [{ all : true }]}).then((parentRecord) => {
         if (!parentRecord) return cb({status: 404});
         if (!parentRecord[relation]) { return cb({status: 404}); }
         cb(null, parentRecord);
@@ -138,7 +138,7 @@ module.exports = function addToCollection (req, res) {
         }
       } else {
         if (child[childPkAttr]) {
-          ChildModel.findById(child[childPkAttr]).then( (childRecord) => {
+          ChildModel.findByPk(child[childPkAttr]).then( (childRecord) => {
             // if there is no real update, no update
             // if (childRecord[associationAttr] === parentPk) return cb(null, childRecord[childPkAttr]);
             // Didn't find it?  Then try creating it.
@@ -183,7 +183,7 @@ module.exports = function addToCollection (req, res) {
   }, function(){
     // if (err) return res.negotiate(err);
 
-    Model.findById(parentPk, { include: req._sails.config.blueprints.populate ? [{ all: true }] : []}).then( (matchingRecord) => {
+    Model.findByPk(parentPk, { include: req._sails.config.blueprints.populate ? [{ all: true }] : []}).then( (matchingRecord) => {
       if(!matchingRecord) return res.serverError();
       return res.ok(matchingRecord);
     }).catch( (err) => {

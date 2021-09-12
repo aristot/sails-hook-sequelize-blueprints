@@ -71,7 +71,7 @@ module.exports = function expand(req, res) {
   if(Model.associations[relation].associationType === 'HasMany')
     populate.limit = actionUtil.parseLimit(req);
 
-  Model.findById(parentPk, { include: [populate] })
+  Model.findByPk(parentPk, { include: [populate] })
   .then( (matchingRecord) => {
       if (!matchingRecord) {
         if(Model.associations[relation].associationType === 'BelongsToMany') {

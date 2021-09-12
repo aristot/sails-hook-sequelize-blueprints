@@ -46,7 +46,7 @@ module.exports = function updateOneRecord (req, res) {
   // (Note: this could be achieved in a single query, but a separate `findOne`
   //  is used first to provide a better experience for front-end developers
   //  integrating with the blueprint API.)
-  Model.findById(pk).then( (matchingRecord) => {
+  Model.findByPk(pk).then( (matchingRecord) => {
 
     if (!matchingRecord) return res.notFound();
 
@@ -74,7 +74,7 @@ module.exports = function updateOneRecord (req, res) {
       // (Note: again, this extra query could be eliminated, but it is
       //  included by default to provide a better interface for integrating
       //  front-end developers.)
-      Model.findById(updatedRecord, {include: req._sails.config.blueprints.populate ? [{ all: true }] : []})
+      Model.findByPk(updatedRecord, {include: req._sails.config.blueprints.populate ? [{ all: true }] : []})
       .then( (populatedRecord) => {
         if (!populatedRecord) return res.serverError('Could not find record after updating!');
         res.ok(populatedRecord);
