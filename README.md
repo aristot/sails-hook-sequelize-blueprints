@@ -1,29 +1,28 @@
 # sails-hook-sequeliz-blueprints
-Sails blueprints for sequelize ORM
+Sails V1.4 blueprints for sequelize ORM V6
 
 
 
-The blueprints waterline replaced with sequelize.
+The blueprints waterline replaced with Sequelize.
 
 # Install
 
-Install [sails-hook-sequelize](https://github.com/festo/sails-hook-sequelize) first:
+Install [sails-hook-sequeliz](https://github.com/aristot/sails-hook-sequeliz) first:
 ```sh
-$ npm install sails-hook-sequelize --save
+$ npm install sails-hook-sequeliz --save
 ```
 
 Install this hook with:
 
 ```sh
-$ npm install sails-hook-sequelize-blueprints --save
+$ npm install sails-hook-sequeliz-blueprints --save
 ```
 
 Sequelize dependencies:
 
 ```sh
 $ npm install --save sequelize
-$ npm install --save pg pg-hstore // in case of PostgreSQL
-$ npm install --save continuation-local-storage
+$ npm install --save cls-hooked
 ```
 
 # Configuration
@@ -40,38 +39,36 @@ $ npm install --save continuation-local-storage
 
 ## Blueprints
 
-Default blueprints configurations
+Default blueprints configurations config/blueprints.js
 
 ```javascript
 module.exports.blueprints = {
   actions: true,
-  index: true,
   shortcuts: true,
   rest: true,
-  prefix: '',
-  restPrefix: '',
-  pluralize: false,
-  populate: true,
-  defaultLimit: 30,
-  populateLimit: 30,
   autoWatch: true,
 }
 ```
 
 ## Connections
-Sequelize connection
+Sequelize connection with sqlserver 2019 Express
+
 ```javascript
-somePostgresqlServer: {
-  user: 'postgres',
-  password: '',
-  database: 'sequelize',
-  dialect: 'postgres',
-  options: {
-    dialect: 'postgres',
-    host   : 'localhost',
-    port   : 5432,
-    logging: true
-  }
+asqlserver: {
+    dialect: 'mssql',
+    username: 'YourUserName',
+    password: 'YourPassword',
+    server   : 'localhost',
+    options : {
+        dialect: 'mssql',
+        host   : 'localhost',
+        port   : 1433,
+        username: 'YourUserName',
+        password: 'YourPassword',
+        database: 'YourDBName',
+        encrypt: false,
+        logging:false
+    }
 }
 ```
 
@@ -115,8 +112,8 @@ module.exports = {
 };
 ```
 
-# New version 2021 customized for new Sail V1.4 version and Sequelize V5 version
-This is an experimental hook tested with sqlite3 database developed by Raymond FEST from ARISTOT compagny
+# New version 2021 customized for new Sail V1.4 version and Sequelize V6 version
+This is an experimental hook  developed by Raymond FEST from ARISTOT compagny and tested with sqlServer 2019 database
 # 2020 03 05 fix bug with util objCompact
 # Credits
 A big thanks to [festo/sailsjs-sequelize-example](https://github.com/festo/sailsjs-sequelize-example) and [Manuel Darveau's answer](https://groups.google.com/forum/#!msg/sailsjs/ALMxbKfnCIo/H2RcRUnnFGE) that turn this possible with thier sequelize implementations.
