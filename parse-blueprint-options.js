@@ -3,8 +3,14 @@
  */
 
 const util = require('util'),
-      _ = require('@sailshq/lodash'),
       flaverr = require('flaverr');
+
+const omit = (obj, props) => {
+        obj = { ...obj };
+        props.forEach(prop => delete obj[prop]);
+        return obj;
+};
+
 /**
  * parseBlueprintOptions()
  *
@@ -178,7 +184,7 @@ module.exports = function parseBlueprintOptions(req) {
       queryOptions.valuesToSet = (function getValuesToSet(){
 
         // Use all of the request params as values for the new record, _except_ `id`.
-        let values = _.omit(req.allParams(), 'id');
+        let values = omit(req.allParams(), 'id');
         // No matter what, don't allow changing the PK via the update blueprint
         // (you should just drop and re-add the record if that's what you really want)
         if (typeof values[Model.primaryKey] !== 'undefined' && values[Model.primaryKey] !== queryOptions.criteria.where[Model.primaryKey]) {
@@ -221,7 +227,35 @@ module.exports = function parseBlueprintOptions(req) {
         throw new Error('Missing required route option, `req.options.alias`.');
       }
 
-      const association = _.find(Model.associations, {alias: req.options.alias});
+      //const association = _.find(Model.associations, {alias: req.options.alias});
+      let association = null;
+      if(Array.isArray(Model.associations)){
+        for (let i=0, ass, l=Model.associations.length; i<l;i++ ) {
+          ass = Model.associations[i];
+          if(typeof ass !== null && typeof ass === 'object' && !Array.isArray(ass)){
+            for (const [k, rec] of Object.entries(ass)) {
+              if((k === 'as' || k === 'alias' ) && rec === req.options.alias){
+                association = ass;
+                break;
+                }
+            }
+          }
+          if(association)break;
+        }
+      } else {
+        for (const [key, ass] of Object.entries(Model.associations)) {
+          if(typeof ass !== null && typeof ass === 'object' && !Array.isArray(ass)){
+            for (const [k, rec] of Object.entries(ass)) {
+              if((k === 'as' || k === 'alias' ) && rec === req.options.alias){
+                association = ass;
+                break;
+                }
+            }
+          }
+          if(association)break;
+        }
+      }
+
       if (!association) {
         throw new Error('Consistency violation: `populate` blueprint could not find association `' + req.options.alias + '` in model `' + Model.globalId + '`.');
       }

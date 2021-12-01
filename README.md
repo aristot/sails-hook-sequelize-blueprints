@@ -1,6 +1,6 @@
 # sails-hook-sequeliz-blueprints
-Sails V1.4 blueprints for sequelize ORM V6
-
+Sails V1.5 blueprints for sequelize ORM V6
+To be used with sails-hook-sequeliz
 
 
 The blueprints waterline replaced with Sequelize.
@@ -48,29 +48,56 @@ module.exports.blueprints = {
   rest: true,
   autoWatch: true,
 }
+
+```
+
+## Package.json
+
+Include in package.json git reference to this package (see following example)
+
+```javascript
+{
+  "name": "test",
+  "private": true,
+  "version": "0.0.0",
+  "description": "application",
+  "keywords": [],
+  "dependencies": {
+    "@babel/preset-env": "7.15.6",
+  
+    "sails": "^1.5.0",
+    "sails-disk": "~2.1.0",
+    "sails-hook-cron": "^3.2.0",
+    "sails-hook-grunt": "^5.0.0",
+    "sails-hook-sequelize": "git://github.com/aristot/sails-hook-sequeliz",
+    "sails-hook-sequeliz-blueprints": "git://github.com/aristot/sails-hook-sequeliz-blueprints",
+    "sails-hook-sockets": "2.0.1",
+    "sails-hook-validation": "^0.4.7",
+    "sequelize": "^6.6.5",
+    "sequelize-cli": "^6.2.0",
+    "tedious": "^12.2.0",
+  },
+  "repository": {
+    
+  },
+  
+  "devDependencies": {
+  },
+  "config": {
+    "grunt": "./node_modules/sails/node_modules/.bin/grunt"
+  },
+  "main": "app.js",
+  "license": "MIT",
+  "engines": {
+    "node": "~14.17.x",
+    "npm": "~7.20.x"
+  }
+}
 ```
 
 ## Connections
 Sequelize connection with sqlserver 2019 Express
 
-```javascript
-asqlserver: {
-    dialect: 'mssql',
-    username: 'YourUserName',
-    password: 'YourPassword',
-    server   : 'localhost',
-    options : {
-        dialect: 'mssql',
-        host   : 'localhost',
-        port   : 1433,
-        username: 'YourUserName',
-        password: 'YourPassword',
-        database: 'YourDBName',
-        encrypt: false,
-        logging:false
-    }
-}
-```
 
 ## Models
 Sequelize model definition
@@ -112,8 +139,10 @@ module.exports = {
 };
 ```
 
-# New version 2021 customized for new Sail V1.4 version and Sequelize V6 version
+# New version 2021 customized for new Sail V1.5 version and Sequelize V6 version
 This is an experimental hook  developed by Raymond FEST from ARISTOT compagny and tested with sqlServer 2019 database
+populate is disabled
+reduce usage of lodash
 # 2020 03 05 fix bug with util objCompact
 # Credits
 A big thanks to [festo/sailsjs-sequelize-example](https://github.com/festo/sailsjs-sequelize-example) and [Manuel Darveau's answer](https://groups.google.com/forum/#!msg/sailsjs/ALMxbKfnCIo/H2RcRUnnFGE) that turn this possible with thier sequelize implementations.

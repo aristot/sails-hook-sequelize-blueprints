@@ -2,9 +2,13 @@
  * Module dependencies
  */
 const util = require('util'),
-      _ = require('lodash'),
       actionUtil = require('../actionUtil');
-
+const has = (obj, path) => {
+        // Regex explained: https://regexr.com/58j0k
+        const pathArray = Array.isArray(path) ? path : path.match(/([^[.\]])+/g);
+      
+        return !!pathArray.reduce((prevObj, key) => prevObj && prevObj[key], obj);
+};
 
 /**
  * Populate (or "expand") an association
@@ -28,7 +32,7 @@ module.exports = function expand(req, res) {
   const relation = req.options.alias;
   if (!relation || !Model) return res.serverError();
   function objCompact(obj, strict) {
-    obj = _.reduce(obj, function(memo, value, paramName) {
+    obj =  Object.entries(obj).reduce((memo, [value, paramName]) =>{
       if (strict) {
         if (value !== undefined && value !== null && value !== false && value !== '') {
           memo[paramName] = value;
@@ -37,7 +41,7 @@ module.exports = function expand(req, res) {
           memo[paramName] = value;
         }
         return memo;
-    }, {});
+       },{});
     return obj;
   }
   // Allow customizable blacklist for params.
@@ -75,7 +79,7 @@ module.exports = function expand(req, res) {
   .then( (matchingRecord) => {
       if (!matchingRecord) {
         if(Model.associations[relation].associationType === 'BelongsToMany') {
-          if (_.has(where, 'id')) return res.notFound('No record found with the specified id.');
+          if (has(where, 'id')) return res.notFound('No record found with the specified id.');
 
           return res.send(200, []);
         } else {

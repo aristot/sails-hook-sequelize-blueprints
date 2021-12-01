@@ -3,9 +3,14 @@
  */
 
 const actionUtil = require('../actionUtil'),
-      util = require('util'),
-      _ = require('lodash');
-
+      util = require('util');
+const cloneDeep = (record)=>{
+        let val = {};
+        for (const [key, value] of Object.entries(record)) {
+          val[key] = value;
+        }
+        return val;
+};
 
 /**
  * Update One Record
@@ -64,8 +69,8 @@ module.exports = function updateOneRecord (req, res) {
       // to notify all subscribers about the update.
       if (req._sails.hooks.pubsub) {
         if (req.isSocket) { Model.subscribe(req, records); }
-        Model.publishUpdate(pk, _.cloneDeep(values), !req.options.mirror && req, {
-          previous: _.cloneDeep(matchingRecord.toJSON())
+        Model.publishUpdate(pk, cloneDeep(values), !req.options.mirror && req, {
+          previous: cloneDeep(matchingRecord.toJSON())
         });
       }
 

@@ -1,9 +1,13 @@
 /**
  * Module dependencies
  */
-const actionUtil = require('../actionUtil'),
-      _ = require('lodash');
-
+const actionUtil = require('../actionUtil');
+const has = (obj, path) => {
+        // Regex explained: https://regexr.com/58j0k
+        const pathArray = Array.isArray(path) ? path : path.match(/([^[.\]])+/g);
+      
+        return !!pathArray.reduce((prevObj, key) => prevObj && prevObj[key], obj);
+};
 
 /**
  * Remove a member from an association
@@ -41,7 +45,7 @@ module.exports = function remove(req, res) {
   let isManyToManyThrough = false;
   let ThroughModel, childAttr; 
   // check it is a M-M through
-  if (_.has(Model.associations[relation].options, 'through')) {
+  if (has(Model.associations[relation].options, 'through')) {
     isManyToManyThrough = true;
     const through = Model.associations[relation].options.through.model;
     ThroughModel = sails.models[through.toLowerCase()];
@@ -50,7 +54,7 @@ module.exports = function remove(req, res) {
     childAttr = childForeign.name || childForeign;
   }
 
-  if(_.isUndefined(childPk)) {
+  if(childPk === undefined) {
     return res.serverError('Missing required child PK.');
   }
 

@@ -2,9 +2,13 @@
  * Module dependencies
  */
 const actionUtil = require('../actionUtil');
-const _ = require('@sailshq/lodash');
 const async = require('async');
+const has = (obj, path) => {
+  // Regex explained: https://regexr.com/58j0k
+  const pathArray = Array.isArray(path) ? path : path.match(/([^[.\]])+/g);
 
+  return !!pathArray.reduce((prevObj, key) => prevObj && prevObj[key], obj);
+};
 /**
  * Add Record To Collection
  *
@@ -55,7 +59,7 @@ module.exports = function addToCollection (req, res) {
   let isManyToManyThrough = false;
   let ThroughModel, childAttr;
   // check it is a M-M through
-  if (_.has(Model.associations[relation].options, 'through')) {
+  if (has(Model.associations[relation].options, 'through')) {
     isManyToManyThrough = true;
     const through = Model.associations[relation].options.through.model;
     ThroughModel = sails.models[through.toLowerCase()];
